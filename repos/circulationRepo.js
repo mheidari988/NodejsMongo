@@ -5,6 +5,21 @@ function circulationRepo() {
     const dbName = 'circulation';
     const newspapersName = "newspapers";
 
+    function remove(id) {
+        return new Promise(async (resolve, reject) => {
+            const client = new MongoClient(url);
+            try {
+                await client.connect();
+                const db = client.db(dbName);
+                const removedItem = await db.collection(newspapersName).deleteOne({ _id: id });
+                resolve(removedItem.deletedCount === 1);
+                await client.close();
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
     function update(id, item) {
         return new Promise(async (resolve, reject) => {
             const client = new MongoClient(url);
@@ -103,7 +118,7 @@ function circulationRepo() {
         });
     }
 
-    return { loadData, get, getById, add, update };
+    return { loadData, get, getById, add, update, remove };
 }
 
 module.exports = circulationRepo();

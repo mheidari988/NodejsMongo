@@ -68,6 +68,12 @@ async function main() {
         assert.equal(updatedItemInDb.Newspaper, "My new paper");
         console.log('update(id,{}) => WORKS');
 
+        const removed = await circulationRepo.remove(updatedItemInDb._id);
+        assert(removed);
+        const removedItemFromDb = await circulationRepo.getById(addedItem._id);
+        assert.equal(removedItemFromDb, null);
+        console.log('remove(id) => WORKS');
+
     } catch (error) {
         console.error(error);
     } finally {
