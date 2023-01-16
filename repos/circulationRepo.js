@@ -3,6 +3,21 @@ const { MongoClient, ObjectId } = require('mongodb');
 function circulationRepo() {
     const url = 'mongodb://localhost:27017';
     const dbName = 'circulation';
+    const newspapersName = "newspapers";
+    function add(item) {
+        return new Promise(async (resolve, reject) => {
+            const client = new MongoClient(url);
+            try {
+                await client.connect();
+                const db = client.db(dbName);
+                const addedItem = await db.collection(newspapersName).insertOne(item);
+                resolve(getById(addedItem.insertedId.toHexString()));
+                await client.close();
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
 
     function get(query, limit) {
         return new Promise(async (resolve, reject) => {
@@ -10,7 +25,7 @@ function circulationRepo() {
             try {
                 await client.connect();
                 const db = client.db(dbName);
-                let items = db.collection('newspapers').find(query);
+                let items = db.collection(newspapersName).find(query);
                 if (limit > 0) {
                     items = items.limit(limit);
                     // collection.find({}).project({ a: 1 })                          // Create a projection of field a
@@ -48,7 +63,7 @@ function circulationRepo() {
             try {
                 await client.connect();
                 const db = client.db(dbName);
-                result = await db.collection('newspapers').findOne({ _id: ObjectId(id) });
+                result = await db.collection(newspapersName).findOne({ _id: ObjectId(id) });
                 resolve(result);
                 await client.close();
             } catch (error) {
@@ -63,7 +78,7 @@ function circulationRepo() {
             try {
                 await client.connect();
                 const db = client.db(dbName);
-                results = await db.collection('newspapers').insertMany(data);
+                results = await db.collection(newspapersName).insertMany(data);
                 resolve(results);
                 await client.close();
             } catch (error) {
@@ -72,7 +87,7 @@ function circulationRepo() {
         });
     }
 
-    return { loadData, get, getById };
+    return { loadData, get, getById, add };
 }
 
 module.exports = circulationRepo();
