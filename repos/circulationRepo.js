@@ -5,6 +5,30 @@ function circulationRepo() {
     const dbName = 'circulation';
     const newspapersName = "newspapers";
 
+    function averageFinalists() {
+        return new Promise(async (resolve, reject) => {
+            const client = new MongoClient(url);
+            try {
+                await client.connect();
+                const db = client.db(dbName);
+                const results = await db.collection(newspapersName).aggregate([
+                    {
+                        $group: {
+                            _id: null,
+                            avgFinalists: {
+                                $avg: "$Pulitzer Prize Winners and Finalists, 1990-2014"
+                            }
+                        }
+                    }
+                ]).toArray();
+                resolve(results[0].avgFinalists);
+                await client.close();
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
     function remove(id) {
         return new Promise(async (resolve, reject) => {
             const client = new MongoClient(url);
@@ -118,7 +142,7 @@ function circulationRepo() {
         });
     }
 
-    return { loadData, get, getById, add, update, remove };
+    return { loadData, get, getById, add, update, remove, averageFinalists };
 }
 
 module.exports = circulationRepo();

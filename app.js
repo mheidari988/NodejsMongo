@@ -74,6 +74,10 @@ async function main() {
         assert.equal(removedItemFromDb, null);
         console.log('remove(id) => WORKS');
 
+        // aggregate
+        const result = await circulationRepo.averageFinalists();
+        console.log(result);
+        
     } catch (error) {
         console.error(error);
     } finally {
