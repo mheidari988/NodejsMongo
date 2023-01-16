@@ -4,6 +4,22 @@ function circulationRepo() {
     const url = 'mongodb://localhost:27017';
     const dbName = 'circulation';
     const newspapersName = "newspapers";
+
+    function update(id, item) {
+        return new Promise(async (resolve, reject) => {
+            const client = new MongoClient(url);
+            try {
+                await client.connect();
+                const db = client.db(dbName);
+                const updatedItem = await db.collection(newspapersName).findOneAndReplace({ _id: id }, item);
+                resolve(updatedItem);
+                await client.close();
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
     function add(item) {
         return new Promise(async (resolve, reject) => {
             const client = new MongoClient(url);
@@ -87,7 +103,7 @@ function circulationRepo() {
         });
     }
 
-    return { loadData, get, getById, add };
+    return { loadData, get, getById, add, update };
 }
 
 module.exports = circulationRepo();

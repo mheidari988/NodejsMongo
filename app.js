@@ -54,6 +54,20 @@ async function main() {
         assert.deepEqual(addedItem, addedItemInDb);
         console.log('add(newItem) => WORKS');
 
+        // update
+        const updatedItem = await circulationRepo.update(addedItem._id, {
+            "Newspaper": "My new paper",
+            "Daily Circulation, 2004": 1,
+            "Daily Circulation, 2013": 2,
+            "Change in Daily Circulation, 2004-2013": 100,
+            "Pulitzer Prize Winners and Finalists, 1990-2003": 0,
+            "Pulitzer Prize Winners and Finalists, 2004-2014": 0,
+            "Pulitzer Prize Winners and Finalists, 1990-2014": 0
+        });
+        const updatedItemInDb = await circulationRepo.getById(addedItem._id);
+        assert.equal(updatedItemInDb.Newspaper, "My new paper");
+        console.log('update(id,{}) => WORKS');
+
     } catch (error) {
         console.error(error);
     } finally {
