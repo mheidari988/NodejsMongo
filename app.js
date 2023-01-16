@@ -12,13 +12,21 @@ async function main() {
     await client.connect();
     const admin = client.db(dbName).admin();
 
-    const results = await circulationRepo.loadData(data);
-    assert.equal(data.length, results.insertedCount);
+    try {
+        const results = await circulationRepo.loadData(data);
+        assert.equal(data.length, results.insertedCount);
+        console.log('loadData(data) => WORKS');
 
-    await client.db(dbName).dropDatabase();
-    console.log(await admin.listDatabases());
+        const getData = await circulationRepo.get();
+        assert.equal(data.length, getData.length);
+        console.log('get() => WORKS');
 
-    client.close();
+    } catch (error) {
+        console.error(error);
+    } finally {
+        await client.db(dbName).dropDatabase();
+        client.close();
+    }
 }
 
 main();
