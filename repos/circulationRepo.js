@@ -42,6 +42,21 @@ function circulationRepo() {
         });
     }
 
+    function getById(id) {
+        return new Promise(async (resolve, reject) => {
+            const client = new MongoClient(url);
+            try {
+                await client.connect();
+                const db = client.db(dbName);
+                result = await db.collection('newspapers').findOne({ _id: id });
+                resolve(result);
+                await client.close();
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
     function loadData(data) {
         return new Promise(async (resolve, reject) => {
             const client = new MongoClient(url);
@@ -50,14 +65,14 @@ function circulationRepo() {
                 const db = client.db(dbName);
                 results = await db.collection('newspapers').insertMany(data);
                 resolve(results);
-                client.close();
+                await client.close();
             } catch (error) {
                 reject(error);
             }
         });
     }
 
-    return { loadData, get };
+    return { loadData, get, getById };
 }
 
 module.exports = circulationRepo();

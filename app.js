@@ -29,6 +29,10 @@ async function main() {
         assert.equal(limitData.length, 3);
         console.log('get() : limitData => WORKS');
 
+        const byId = await circulationRepo.getById(getData[4]._id);
+        assert.deepEqual(byId, getData[4]);
+        console.log('getById() : getData[4]._id => WORKS');
+
     } catch (error) {
         console.error(error);
     } finally {
