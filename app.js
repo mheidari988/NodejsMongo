@@ -4,7 +4,7 @@ const assert = require('assert');
 const circulationRepo = require('./repos/circulationRepo');
 const data = require('./circulation.json');
 
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://0.0.0.0:27017';
 const dbName = 'circulation';
 
 async function main() {

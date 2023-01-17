@@ -1,7 +1,7 @@
 const { MongoClient, ObjectId } = require('mongodb');
 
 function circulationRepo() {
-    const url = 'mongodb://localhost:27017';
+    const url = 'mongodb://0.0.0.0:27017';
     const dbName = 'circulation';
     const newspapersName = "newspapers";
 
